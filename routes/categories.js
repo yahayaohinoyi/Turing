@@ -1,12 +1,5 @@
-var sql = require('mysql')
-var conn = sql.createConnection({
-    user: 'root',
-    password: 'dangermouse',
-    server: 'localhost', 
-    database: 'TuringDB' ,
-    port:3306
-})
-module.exports=function(app){
+
+module.exports=function(app,conn){
 app.get('/categories',function(req,res){
     conn.connect(function(err){
         if(err) console.log(err);
@@ -41,9 +34,10 @@ app.get('/categories/inProduct/:product_id',function(req,res){ //Just a little b
         for(let i=0;i<recordset.length;i++){
             if(recordset[i].product_id == req.params.product_id){
             delete recordset[i].description
-            res.send(recordset[i])
+            
         }
         }
+        res.send(recordset[i])
     })
 })
 

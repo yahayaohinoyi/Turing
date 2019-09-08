@@ -1,14 +1,4 @@
-var sql = require("mysql");
-// config for your database
-var conn = sql.createConnection({
-    user: 'root',
-    password: 'dangermouse',
-    server: 'localhost', 
-    database: 'TuringDB' ,
-    port:3306
-})
-
-module.exports = function(app){
+module.exports = function(app,conn){
 app.get('/department', function (req, res) {
    
     // connect to your database
@@ -17,7 +7,7 @@ app.get('/department', function (req, res) {
         if (err) console.log(err);
         
         // query to the database and get the records
-        conn.query('select * from TuringDB.department', function (err, recordset) {
+        conn.query('SELECT * FROM TuringDB.department', function (err, recordset) {
             
             if (err) console.log(err)
             // send records as a response
