@@ -1,5 +1,7 @@
 
-module.exports= function(app,conn){
+module.exports= function(app,conn,bodyParser){
+     app.use(bodyParser.urlencoded({extended:false}))
+     app.use(bodyParser.json())
 app.get('/products',function(req,res){
     
      conn.connect(function(err){
@@ -35,17 +37,63 @@ app.get('/products',function(req,res){
      })
      
 })
-app.get('/products/search',function(req,res){
+app.get('/products/search',function(req,res){ //finish up later
     conn.connect(function(err){
         if(err) console.log(err)
         if(req.query.query_string != null || req.query.all_words !=null){
             var search_string = req.query.query_string;
             var all_words = req.query.all_words;
         }
-        conn.query("select product_id,name,description,price,discounted_price,thumbnail from TuringDB.product WHERE name = '" +search_string + "' LIMIT 20",function(err,recordset){
+        conn.query("select product_id,name,description,price,discounted_price,thumbnail from TuringDB.product WHERE name = '" +search_string + "'",function(err,recordset){
             if(err) console.log(err)
             res.send(recordset)
         })
     })
+})
+app.get('/products/:product_id',function(req,res){ //4.3
+    conn.connect(function(err){
+        if(err) console.log(err)
+        conn.query('select * from TuringDB.product WHERE product_id = ' + req.params.product_id,function(err,recordset){
+            if(err) console.log(err)
+            res.send(recordset)
+        })
+    })
+})
+
+app.get('/products/inCategory/:category_id',function(req,res){ //some queries req 4.4
+    conn.connect(function(err){
+        if(err) console.log(err)
+        conn.query('select TuringDB.product.product_id,TuringDB.product.name,TuringDB.product.description ,TuringDB.product.price,TuringDB.product.discounted_price,TuringDB.product.thumbnail from TuringDB.product,TuringDB.product_category where TuringDB.product.product_id = TuringDB.product_category.product_id and TuringDB.product_category.category_id = '+ req.params.category_id,function(err,recordset){
+            if(err) console.log(err);
+            res.send(recordset)
+        })
+    })
+})
+
+app.get('/products/inDepartment/:department_id', function(req,res){
+    conn.connect(function(err){
+        if(err) console.log(err)
+        conn.query()
+    })
+})
+app.get('/products/:product_id/reviews', function(req,res){
+    conn.connect(function(err){
+        if(err) console.log(err)
+        conn.query('select TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on from TuringDB.review where TuringDB.review.product_id =' + req.params.product_id,function(err,recordset){
+            if(err) console.log(err)
+            res.send(recordset)
+        })
+    })
+})
+app.post('/products/:product_id/reviews', function(req,res){//bugs
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      conn.connect(function(err){        
+       if(err) console.log(err)
+        conn.query("insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values(1, 1, req.body.product_id  ,req.body.review, req.body.rating, STR_TO_DATE(date, '%d-%m-%Y'))",function(err,recordset){
+            if(err) console.log(err)
+               res.send(recordset)
+        })
+     })
 })
 }
