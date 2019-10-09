@@ -28,7 +28,7 @@ module.exports = function(app,conn){
         conn.connect(function(err){
             console.log(err)
         });
-        conn.query("select attribute_value_id,value from TuringDB.attribute_value where attribute_id = " +req.params.attribute_id,function(err,recordset){
+        conn.query("select attribute_value_id,value from TuringDB.attribute_value where attribute_id = ? ",[req.params.attribute_id],function(err,recordset){
             res.send(recordset)
         })
     })

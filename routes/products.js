@@ -1,7 +1,5 @@
 
-module.exports= function(app,conn,bodyParser){
-     app.use(bodyParser.urlencoded({extended:false}))
-     app.use(bodyParser.json())
+module.exports= function(app,conn){
 app.get('/products',function(req,res){
     
      conn.connect(function(err){
@@ -85,15 +83,15 @@ app.get('/products/:product_id/reviews', function(req,res){
         })
     })
 })
-app.post('/products/:product_id/reviews', function(req,res){//bugs
-var today = new Date();
-var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-      conn.connect(function(err){        
-       if(err) console.log(err)
-        conn.query("insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values(1, 1, req.body.product_id  ,req.body.review, req.body.rating, STR_TO_DATE(date, '%d-%m-%Y'))",function(err,recordset){
-            if(err) console.log(err)
-               res.send(recordset)
-        })
-     })
-})
+// app.post('/products/:product_id/reviews', function(req,res){//bugs
+// var today = new Date();
+// var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+//       conn.connect(function(err){        
+//        if(err) console.log(err)
+//         conn.query("insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values ?",[2,2,2,'goos',7,12-03-1998],function(err,recordset){
+//             if(err) console.log(err)
+//                res.send(recordset)
+//         })
+//      })
+// })
 }
