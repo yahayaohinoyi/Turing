@@ -86,9 +86,14 @@ app.get('/products/:product_id/reviews', function(req,res){
 // app.post('/products/:product_id/reviews', function(req,res){//bugs
 // var today = new Date();
 // var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-//       conn.connect(function(err){        
+//       conn.connect(function(err){      
+//        var sql = "insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values ?";
+//        values = [[
+           
+//        ]]
+
 //        if(err) console.log(err)
-//         conn.query("insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values ?",[2,2,2,'goos',7,12-03-1998],function(err,recordset){
+//         conn.query(sql,[values],[2,2,2,'goos',7,12-03-1998],function(err,recordset){
 //             if(err) console.log(err)
 //                res.send(recordset)
 //         })
