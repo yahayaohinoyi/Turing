@@ -1,10 +1,5 @@
 module.exports = function(app,conn){
 app.get('/department', function (req, res) {
-   
-    // connect to your database
-    conn.connect(function (err) {
-    
-        if (err) console.log(err);
         
         // query to the database and get the records
         conn.query('SELECT * FROM TuringDB.department', function (err, recordset) {
@@ -14,15 +9,12 @@ app.get('/department', function (req, res) {
             res.send(recordset);  
         });
         
-    });
+   
 });
 
+
 app.get('/department/:department_id',function(req,res){
-   
-   
-   conn.connect(function (err) {
-    
-    if (err) console.log(err);
+ 
     
     // query to the database and get the records
     conn.query('select * from TuringDB.department', function (err, recordset) {
@@ -35,6 +27,8 @@ app.get('/department/:department_id',function(req,res){
             }
         }
     });
+
 })
-})}
+
+}
 

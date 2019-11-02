@@ -1,19 +1,16 @@
 
 module.exports=function(app,conn){
 app.get('/categories',function(req,res){
-    conn.connect(function(err){
-        if(err) console.log(err);
+    
 
         conn.query('select * from TuringDB.category', function (err, recordset){
             if(err) console.log(err);
             res.send(recordset)
-        })
+        
     })
 })
 app.get('/categories/:category_id',function(req,res){
-    conn.connect(function(err){
-        if(err) console.log(err);
-
+  
         conn.query('select * from TuringDB.category', function (err, recordset){
             if(err) console.log(err);
             for (let i=0 ; i< recordset.length ;i++){
@@ -22,13 +19,11 @@ app.get('/categories/:category_id',function(req,res){
                 }
             }
         })
-    })
+    
 })
 
 app.get('/categories/inProduct/:product_id',function(req,res){ //Just a little bug
-    conn.connect(function(err){
-        console.log(err)
-    });
+    
     conn.query('select * from TuringDB.category',function(err,recordset){
         if(err) console.log(err);
         for(let i=0;i<recordset.length;i++){
@@ -42,9 +37,7 @@ app.get('/categories/inProduct/:product_id',function(req,res){ //Just a little b
 })
 
 app.get('/categories/inDepartment/:department_id',function(req,res){ //GET ALL CATEGORIES IN A DEPARTMENT
-    conn.connect(function(err){
-        if(err) console.log(err)
-    });
+   
     
     conn.query('select * from TuringDB.category',function(err,recordset){
         var arr =[]
