@@ -24,6 +24,6 @@ require('./routes/attributes')(app,conn)
 require('./routes/products')(app,conn)
 require('./routes/customers')(app,conn,jwt,passport_jwt,passport,bcrypt,local_strategy,sequelize)
 require('./routes/orders')(app,conn)
-app.listen(5000,function(){
+app.listen(5000,()=>{
     console.log('server running')
 })
