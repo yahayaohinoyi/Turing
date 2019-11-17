@@ -74,7 +74,7 @@ module.exports = (app,conn,jwt,passport_jwt,passport,bcrypt,local_strategy,seque
 
   app.put('/customer',passToken, (req,res) => { 
     
-    // such cute code but an err in mysql syntax
+    
     jwt.verify(req.token, jwtOptions.secretOrKey, (err, decoded) => {
       
       if(err) console.log(err)      
@@ -91,7 +91,7 @@ module.exports = (app,conn,jwt,passport_jwt,passport,bcrypt,local_strategy,seque
       })   
     });
   });
-  app.put('/customer/address',passToken, (req,res)=>{ // such cute code but an err in mysql syntax
+  app.put('/customer/address',passToken, (req,res)=>{ 
     jwt.verify(req.token, jwtOptions.secretOrKey, (err, decoded)=> {
       if(err) console.log(err)      
       var sql_query = `update TuringDB.customer set address_1 = '${req.body.address_1}',address_2 = '${req.body.address_2}',city = '${req.body.city}',region = '${req.body.region}',postal_code = '${req.body.postal_code}',shipping_region_id = '${req.body.shipping_region_id}'  where customer_id = '${decoded.recordset[0].customer_id}'`;
@@ -102,7 +102,7 @@ module.exports = (app,conn,jwt,passport_jwt,passport,bcrypt,local_strategy,seque
       });
     });
   });
-  app.put('/customer/creditCard',passToken, (req,res)=>{ // such cute code but an err in mysql syntax
+  app.put('/customer/creditCard',passToken, (req,res)=>{ 
     jwt.verify(req.token, jwtOptions.secretOrKey, (err, decoded)=> {
       if(err) console.log(err)      
       var sql_query = `update TuringDB.customer set credit_card = '${req.body.credit_card}' where customer_id = '${decoded.recordset[0].customer_id}'`;

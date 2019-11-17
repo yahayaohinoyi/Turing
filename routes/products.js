@@ -68,12 +68,6 @@ app.get('/products/inCategory/:category_id',function(req,res){ //some queries re
     })
 })
 
-app.get('/products/inDepartment/:department_id', function(req,res){
-    conn.connect(function(err){
-        if(err) console.log(err)
-        conn.query()
-    })
-})
 app.get('/products/:product_id/reviews', function(req,res){
     conn.connect(function(err){
         if(err) console.log(err)
@@ -83,20 +77,18 @@ app.get('/products/:product_id/reviews', function(req,res){
         })
     })
 })
-// app.post('/products/:product_id/reviews', function(req,res){//bugs
-// var today = new Date();
-// var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-//       conn.connect(function(err){      
-//        var sql = "insert into TuringDB.review (TuringDB.review.review_id,TuringDB.review.customer_id,TuringDB.review.product_id,TuringDB.review.review,TuringDB.review.rating,TuringDB.review.created_on ) values ?";
-//        values = [[
-           
-//        ]]
-
-//        if(err) console.log(err)
-//         conn.query(sql,[values],[2,2,2,'goos',7,12-03-1998],function(err,recordset){
-//             if(err) console.log(err)
-//                res.send(recordset)
-//         })
-//      })
-// })
+app.post('/products/:product_id/reviews', function(req,res){//bugs
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      conn.connect(function(err){      
+       var sql = "insert into TuringDB.review (review_id,customer_id,product_id,review,rating,created_on ) values ?";
+       values = [
+           req.body.review_id , req.body.customer_id ,req.body.product_id , req.body.review , req.body.rating , date
+       ]
+        conn.query(sql,[values],function(err,recordset){
+            if(err) console.log(err)
+               res.send(recordset)
+        })
+     })
+})
 }
