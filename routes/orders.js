@@ -1,6 +1,5 @@
 module.exports=(app,conn)=>{
   app.post('/orders',(req,res)=>{
-     
       var today = new Date();
       var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
       var sql_count = 'select count(*) as count from TuringDB.orders';
@@ -9,25 +8,29 @@ module.exports=(app,conn)=>{
           req.body.shipping_id , req.body.tax_id , date
       ]]      
       conn.query(sql_query,[values],(err)=>{
-          if(err) console.log(err)
+          if(err) res.send(err)
       })
+      try{
       conn.query(sql_count,(err,recordset)=>{
           if(err) console.log(err)
           res.send({'order_id' : recordset[0].count})
 
       })
+      }catch(err){
+          res.send(err)
+      }
   });
  
-  app.get('/orders/:order_id' , (req , res)=>{ //mad oo to be fixed
+  app.get('/orders/:order_id' , (req , res)=>{ 
     
       if(req.params.order_id == "inCustomer"){
         var sql = 'select TuringDB.orders.order_id,TuringDB.orders.total_amount,TuringDB.orders.created_on,TuringDB.orders.shipped_on,TuringDB.customer.name from TuringDB.orders,TuringDB.customer '
-
         conn.query(sql,(err,recordset)=>{
-          if(err) console.log(err)
+          if(err) res.send(err)
           res.send(recordset)
         })
       }else{
+        try{
         conn.query('select * from TuringDB.orders where order_id ='+ req.params.order_id ,(err , recordset)=>{
           if(recordset.length == 0){
             res.send('Table Empty')
@@ -42,13 +45,19 @@ module.exports=(app,conn)=>{
           }
         }
         })
+       }catch(err){
+         res.send(err)
+       }
       }
   })
 app.get('/orders/shortDetail/:order_id',(req,res)=>{
     var sql = 'select TuringDB.orders.order_id,TuringDB.orders.total_amount,TuringDB.orders.created_on,TuringDB.orders.shipped_on,TuringDB.customer.name from TuringDB.orders,TuringDB.customer where TuringDB.orders.order_id = '+req.params.order_id;
+    try{
     conn.query(sql,(err,recordset)=>{
-        if(err) console.log(err)
         res.send(recordset)
     })
+   }catch(err){
+    res.send(err)
+   }
 })
 }

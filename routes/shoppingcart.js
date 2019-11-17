@@ -15,10 +15,13 @@ module.exports = function(app,conn,jwt){
        };
     app.get('/shoppingcart/generateUniqueId',(req,res)=>{
         var sql = 'select count(*) as count from TuringDB.shopping_cart';
+        try{
         conn.query(sql,(err,recordset)=>{
-            if(err) console.log(err)
              res.send({'cart_id' : recordset[0].count + 1})
         })
+    }catch(err){
+        res.send(err)
+    }
     });
     app.post('/shoppingcart/add',(req,res)=>{ //change status
         var today = new Date();
@@ -28,48 +31,64 @@ module.exports = function(app,conn,jwt){
             req.body.cart_id , req.body.product_id , req.body.attributes ,req.body.quantity , date
         ]]      
         conn.query(sql_query,[values],(err)=>{
-            if(err) console.log(err)
+            if(err) res.send(err)
         });
+        try{
         conn.query('select * from TuringDB.shopping_cart',(err,recordset)=>{
-            if(err) console.log(err)
             res.send(recordset)
         })
+       }catch(err){
+            res.send(err)
+       }
     });
     app.get('/shoppingcart/:cart_id',(req,res)=>{
         let sql = 'select * from TuringDB.shopping_cart where cart_id ='+req.params.cart_id;
+        try{
         conn.query(sql , (err,recordset)=>{
-            if(err) console.log(err)
             res.send(recordset)
         })
+        }catch(err){
+            res.send(err)
+        }
     });
     app.put('/shoppingcart/update/:item_id', passToken, (req, res)=>{ //requery
         jwt.verify(req.token,secret,(err,decoded)=>{
-            if(err) console.log(err)
+            if(err) res.send(err)
+            try{
             conn.query('update TuringDB.shopping_cart set(quantity) = ? where item_id = ' + decoded.recordset[0].item_id,[req.body.quantity ] , (err,recordset)=>{
-                if(err) console.log(err)
-                res.send({"message" : "quantity updated successfully"})
+                 res.send({"message" : "quantity updated successfully"})
             })
-
+            }catch(err){
+                 res.send(err)
+            }
         })
     });
     app.delete('/shoppingcart/empty/:cart_id',passToken,(req,res)=>{
         jwt.verify(req.token , secret, (err)=>{
-            if(err) console.log(err)
+            if(err) res.send(err)
+            try{
             conn.query('delete from TuringDB.shopping_cart where cart_id ='+req.params.cart_id,(err,recordset)=>{
                 if(err) console.log(err)
                 res.status(200).send({recordset})
                 
-            } )
+            })
+            }catch(err){
+                res.send(err)
+            }
         })
+        
     });
     app.delete('/shoppingcart/removeProduct/:item_id',passToken,(req,res)=>{
         jwt.verify(req.token , secret, (err)=>{
-            if(err) console.log(err)
+            if(err) res.send(err)
+            try{
             conn.query('delete from TuringDB.shopping_cart where item_id ='+req.params.item_id,(err,recordset)=>{
-                if(err) console.log(err)
                 res.status(200).send({recordset})
                 
-            } )
+            })
+            }catch(err){
+                res.send(err)
+            }
         })
          
     });
