@@ -1,4 +1,18 @@
-module.exports = function(app,conn){
+module.exports = function(app,conn,jwt){
+
+    const secret = require('../config/strategy')
+
+    const passToken =(req,res,next) => {
+        const bearerHeader = req.headers['authorization'];
+        if(typeof bearerHeader !== undefined){
+          const bearer = bearerHeader.split(' ');
+          const bearerToken = bearer[1]
+          req.token = bearerToken;
+          next();
+        }else{
+          res.sendStatus(403)
+        }
+       };
     app.get('/shoppingcart/generateUniqueId',(req,res)=>{
         var sql = 'select count(*) as count from TuringDB.shopping_cart';
         conn.query(sql,(err,recordset)=>{
@@ -21,20 +35,44 @@ module.exports = function(app,conn){
             res.send(recordset)
         })
     });
-    app.get('/shoppingcart/:cart_id',(req,res)=>{//requery
+    app.get('/shoppingcart/:cart_id',(req,res)=>{
         let sql = 'select * from TuringDB.shopping_cart where cart_id ='+req.params.cart_id;
         conn.query(sql , (err,recordset)=>{
             if(err) console.log(err)
             res.send(recordset)
         })
     });
-    app.put('shoppingcart/update/:item_id' , (req, res)=>{
+    app.put('shoppingcart/update/:item_id', passToken, (req, res)=>{ //requery
+        jwt.verify(req.token,secret,(err,decoded)=>{
+            if(err) console.log(err)
+            conn.query('update TuringDB.customer set(quantity) = ? where item_id = ' + decoded.recordset[0].item_id,[req.body.quantity ] , (err,recordset)=>{
+                if(err) console.log(err)
+                res.send({"message" : "quantity updated successfully"})
+            })
 
+        })
+        
     });
-    app.delete('shoppingcart/empty/:cart_id',(req,res)=>{
+    app.delete('shoppingcart/empty/:cart_id',passToken,(req,res)=>{
+        jwt.verify(req.token , secret, (err)=>{
+            if(err) console.log(err)
+            conn.query('delete from TuringDB.shoppingcart where cart_id ='+req.params.cart_id,(err,recordset)=>{
+                if(err) console.log(err)
+                res.status(200).send({recordset})
+                
+            } )
+        })
 
     });
     app.delete('shoppingcart/removeProduct/:item_id',(req,res)=>{
+        jwt.verify(req.token , secret, (err)=>{
+            if(err) console.log(err)
+            conn.query('delete from TuringDB.shoppingcart where item_id ='+req.params.item_id,(err,recordset)=>{
+                if(err) console.log(err)
+                res.status(200).send({recordset})
+                
+            } )
+        })
          
     });
 

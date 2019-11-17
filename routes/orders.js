@@ -32,7 +32,6 @@ module.exports=(app,conn)=>{
           if(recordset.length == 0){
             res.send('Table Empty')
           }
-         
           else{
             for(let i=0 ; i<recordset.length ;i++){
                 if(req.params.order_id == recordset[i].order_id){
@@ -45,7 +44,6 @@ module.exports=(app,conn)=>{
         })
       }
   })
-
 app.get('/orders/shortDetail/:order_id',(req,res)=>{
     var sql = 'select TuringDB.orders.order_id,TuringDB.orders.total_amount,TuringDB.orders.created_on,TuringDB.orders.shipped_on,TuringDB.customer.name from TuringDB.orders,TuringDB.customer where TuringDB.orders.order_id = '+req.params.order_id;
     conn.query(sql,(err,recordset)=>{
