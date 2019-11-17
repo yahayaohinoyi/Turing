@@ -42,32 +42,30 @@ module.exports = function(app,conn,jwt){
             res.send(recordset)
         })
     });
-    app.put('shoppingcart/update/:item_id', passToken, (req, res)=>{ //requery
+    app.put('/shoppingcart/update/:item_id', passToken, (req, res)=>{ //requery
         jwt.verify(req.token,secret,(err,decoded)=>{
             if(err) console.log(err)
-            conn.query('update TuringDB.customer set(quantity) = ? where item_id = ' + decoded.recordset[0].item_id,[req.body.quantity ] , (err,recordset)=>{
+            conn.query('update TuringDB.shopping_cart set(quantity) = ? where item_id = ' + decoded.recordset[0].item_id,[req.body.quantity ] , (err,recordset)=>{
                 if(err) console.log(err)
                 res.send({"message" : "quantity updated successfully"})
             })
 
         })
-        
     });
-    app.delete('shoppingcart/empty/:cart_id',passToken,(req,res)=>{
+    app.delete('/shoppingcart/empty/:cart_id',passToken,(req,res)=>{
         jwt.verify(req.token , secret, (err)=>{
             if(err) console.log(err)
-            conn.query('delete from TuringDB.shoppingcart where cart_id ='+req.params.cart_id,(err,recordset)=>{
+            conn.query('delete from TuringDB.shopping_cart where cart_id ='+req.params.cart_id,(err,recordset)=>{
                 if(err) console.log(err)
                 res.status(200).send({recordset})
                 
             } )
         })
-
     });
-    app.delete('shoppingcart/removeProduct/:item_id',(req,res)=>{
+    app.delete('/shoppingcart/removeProduct/:item_id',passToken,(req,res)=>{
         jwt.verify(req.token , secret, (err)=>{
             if(err) console.log(err)
-            conn.query('delete from TuringDB.shoppingcart where item_id ='+req.params.item_id,(err,recordset)=>{
+            conn.query('delete from TuringDB.shopping_cart where item_id ='+req.params.item_id,(err,recordset)=>{
                 if(err) console.log(err)
                 res.status(200).send({recordset})
                 
